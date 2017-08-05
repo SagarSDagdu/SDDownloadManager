@@ -38,7 +38,7 @@ Run `pod install` to install the dependencies.
                             onProgress progressBlock:DownloadProgressBlock? = nil,
                             onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
 
-## Parameters :
+### Parameters :
 
 - `request` : A `URLRequest` which represents a downloadable resource.
 
@@ -58,6 +58,10 @@ If a directory name is provided, a new sub-directory will be created in the Cach
 - `completionBlock` : Called back with two parameters `error` and `fileUrl`.
     - If the download was successful, `fileUrl` represents the URL of the file. The file can be accessed using this url.
     - If the download was unsuccessful, `error` represents the error that occured in the downloading process.
+    
+### return
+
+- The method returns a key which is unique to that download call. Ideally, this key can be used later for cancelling the download or altering the progress block of a specific download.  ***If a download with the speicied urlrequest already exists, this method returns `nil`.***
       
 ### Checking for current downloads 
 
