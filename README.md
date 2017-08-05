@@ -1,8 +1,6 @@
 SDDownloadManager
 =================
 
-## SDDownloadManager
-
 A simple and robust download manager for iOS (Swift 3) based on `URLSession` to deal with asynchronous downloading and management of multiple files.
 
 `SDDownloadManager` is a singleton instance and can thus be called in your code safely from wherever you need to. The idea of writing yet another download manager library stemmed from the fact there are no available open source projects written using Swift based on the new `URLSession` APIs.
