@@ -126,20 +126,16 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
                     })
                     return
                 }
+                let fileName = download.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent)!
+                let directoryName = download.directoryName
                 
-                OperationQueue().addOperation({
-                    
-                    let fileName = download.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent)!
-                    let directoryName = download.directoryName
-                    
-                    let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: directoryName, withName: fileName)
-                    let didSucceed = fileMovingResult.0
-                    let error = fileMovingResult.1
-                    let finalFileUrl = fileMovingResult.2
-                    
-                    OperationQueue.main.addOperation({
-                        (didSucceed ? download.completionBlock(nil,finalFileUrl) : download.completionBlock(error,nil))
-                    })
+                let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: directoryName, withName: fileName)
+                let didSucceed = fileMovingResult.0
+                let error = fileMovingResult.1
+                let finalFileUrl = fileMovingResult.2
+                
+                OperationQueue.main.addOperation({
+                    (didSucceed ? download.completionBlock(nil,finalFileUrl) : download.completionBlock(error,nil))
                 })
             }
         }
