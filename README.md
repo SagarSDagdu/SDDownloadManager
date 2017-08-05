@@ -90,6 +90,11 @@ To cancel a specific download:
 
 `SDDownloadManager` requires iOS 9.x or greater.
 
+## Future Enhancements
+
+I'm planning to integrate the following features in upcoming releases :
+- Background Downloads.
+- A better and clean example project with more demonstration. (It will be great if I get some help in this from those who are actually using it!)
 
 ## License
 
