@@ -23,8 +23,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.progressView.setProgress(0, animated: true)
-        self.progressLabel.text = "0"
+        self.progressView.setProgress(0, animated: false)
+        self.progressLabel.text = "0.0 %"
+        self.finalUrlLabel.text = ""
         
         let request = URLRequest.init(url: URL.init(string: "http://www.sample-videos.com/video/3gp/144/big_buck_bunny_144p_5mb.3gp")!)
         
@@ -32,8 +33,9 @@ class ViewController: UIViewController {
                                                                inDirectory: directoryName,
                                                                withName: nil,
                                                                onProgress:  { [weak self] (progress) in
+                                                                let percentage = String(format: "%.1f %", (progress * 100))
                                                                 self?.progressView.setProgress(Float(progress), animated: true)
-                                                                self?.progressLabel.text = "\(progress)"
+                                                                self?.progressLabel.text = "\(percentage) %"
         }) { [weak self] (error, url) in
             if let error = error {
                 print("Error is \(error as NSError)")

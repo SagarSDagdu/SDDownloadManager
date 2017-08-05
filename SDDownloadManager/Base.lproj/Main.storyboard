@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -28,25 +29,22 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="XcO-fi-2CJ">
-                                <rect key="frame" x="32.5" y="157" width="310" height="2"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="310" id="u0N-37-VMl"/>
-                                </constraints>
+                                <rect key="frame" x="36" y="157" width="303.5" height="2"/>
                             </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="opY-8r-s1c">
-                                <rect key="frame" x="32" y="167" width="42" height="21"/>
+                                <rect key="frame" x="35.5" y="167" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Final URL :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TjP-ug-w3y">
-                                <rect key="frame" x="32" y="223" width="82" height="21"/>
+                                <rect key="frame" x="35.5" y="223" width="82" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jLs-v4-aei">
-                                <rect key="frame" x="32" y="252" width="310.5" height="21"/>
+                                <rect key="frame" x="35.5" y="252" width="304" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -58,6 +56,8 @@
                             <constraint firstItem="jLs-v4-aei" firstAttribute="trailing" secondItem="XcO-fi-2CJ" secondAttribute="trailing" id="BPt-rY-2AN"/>
                             <constraint firstItem="XcO-fi-2CJ" firstAttribute="top" secondItem="uch-Bu-8JZ" secondAttribute="bottom" constant="51" id="BiS-xN-ASD"/>
                             <constraint firstItem="TjP-ug-w3y" firstAttribute="leading" secondItem="opY-8r-s1c" secondAttribute="leading" id="DGy-JF-8VN"/>
+                            <constraint firstItem="XcO-fi-2CJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="GEY-7O-DUr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="XcO-fi-2CJ" secondAttribute="trailing" constant="20" id="GIg-QJ-ykG"/>
                             <constraint firstItem="jLs-v4-aei" firstAttribute="top" secondItem="TjP-ug-w3y" secondAttribute="bottom" constant="8" id="GoB-wJ-gcO"/>
                             <constraint firstItem="uch-Bu-8JZ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="HlO-vH-sS9"/>
                             <constraint firstItem="jLs-v4-aei" firstAttribute="leading" secondItem="TjP-ug-w3y" secondAttribute="leading" id="Lx5-b1-Zfd"/>
