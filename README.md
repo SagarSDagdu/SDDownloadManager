@@ -1,5 +1,6 @@
 SDDownloadManager
 =================
+![alt text](/SDDownloadManager/sddwn.png)
 
 A simple and robust download manager for iOS (Swift 3) based on `URLSession` to deal with asynchronous downloading and management of multiple files.
 
