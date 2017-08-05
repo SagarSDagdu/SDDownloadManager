@@ -15,6 +15,7 @@
 		ACE3B69A1F35D62E00684BE6 /* SDDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE3B6971F35D62E00684BE6 /* SDDownloadManager.swift */; };
 		ACE3B69B1F35D62E00684BE6 /* SDDownloadObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE3B6981F35D62E00684BE6 /* SDDownloadObject.swift */; };
 		ACE3B69C1F35D62E00684BE6 /* SDFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE3B6991F35D62E00684BE6 /* SDFileUtils.swift */; };
+		ACE3B6A01F36017E00684BE6 /* sddwn.png in Resources */ = {isa = PBXBuildFile; fileRef = ACE3B69F1F36017E00684BE6 /* sddwn.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		ACE3B6971F35D62E00684BE6 /* SDDownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDDownloadManager.swift; sourceTree = "<group>"; };
 		ACE3B6981F35D62E00684BE6 /* SDDownloadObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDDownloadObject.swift; sourceTree = "<group>"; };
 		ACE3B6991F35D62E00684BE6 /* SDFileUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDFileUtils.swift; sourceTree = "<group>"; };
+		ACE3B69F1F36017E00684BE6 /* sddwn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sddwn.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				ACE3B6961F35D5E500684BE6 /* Classes */,
 				ACE3B6841F35D5BA00684BE6 /* AppDelegate.swift */,
 				ACE3B6861F35D5BA00684BE6 /* ViewController.swift */,
+				ACE3B69F1F36017E00684BE6 /* sddwn.png */,
 				ACE3B6881F35D5BA00684BE6 /* Main.storyboard */,
 				ACE3B68B1F35D5BA00684BE6 /* Assets.xcassets */,
 				ACE3B68D1F35D5BA00684BE6 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ACE3B6A01F36017E00684BE6 /* sddwn.png in Resources */,
 				ACE3B68F1F35D5BA00684BE6 /* LaunchScreen.storyboard in Resources */,
 				ACE3B68C1F35D5BA00684BE6 /* Assets.xcassets in Resources */,
 				ACE3B68A1F35D5BA00684BE6 /* Main.storyboard in Resources */,
@@ -319,6 +323,7 @@
 				ACE3B6951F35D5BA00684BE6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
