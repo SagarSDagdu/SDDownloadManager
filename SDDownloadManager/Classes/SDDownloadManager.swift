@@ -69,6 +69,11 @@ final class SDDownloadManager: NSObject {
         }
     }
     
+    public func isDownloadInProgress(forKey key:String?) -> Bool {
+        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
+        return downloadStatus.0
+    }
+    
     public func alterBlocksForOngoingDownload(withUniqueKey key:String?,
                                      setProgress progressBlock:DownloadProgressBlock?,
                                      setCompletion completionBlock:@escaping DownloadCompletionBlock) {
