@@ -26,27 +26,39 @@ Run `pod install` to install the dependencies.
 
 `SDDownloadManager` provides facilities for the following task:
 
-- Downloading multiple files asynchronusly.
+- Downloading multiple files asynchronusly to your specified directory.
 - Keeping track of download progress and download completion via block syntax, no need to implement delegates!
-- checking for file existence.
 
-All the following instance methods can be called directly on 
 
 ### Downloading files
 
+    public func dowloadFile(withRequest request: URLRequest,
+                            inDirectory directory: String? = nil,
+                            withName fileName: String? = nil,
+                            onProgress progressBlock:DownloadProgressBlock? = nil,
+                            onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
 
+## Parameters :
 
-The easiest way to get started is by simply passing to the last of the aforementioned methods the URL string of the file that needs to be downloaded. You will get a chance to pass in two blocks that will help you keep track of the download progress (a float from 0 to 1) and of the completion of the task.
+- `request` : A `URLRequest` which represents a downloadable resource.
+
+- `directory` : A `String` which represents a directory name inside the Caches directory of the app.
 
 All the files, once downloaded will be moved from the `/tmp` directory of the device to the Caches directory. This is done for two reasons:
  
-- the `/tmp` directory can be cleaned once in a while to make sure that any partial, cancelled or failed downloads get properly disposed of and do not occupy space both on the device and in iTunes backups;
-- the Caches directory is not synced by default with the user's iCloud documents. This is in compliance with Apple's rules about content that – not being user-specific – can be re-downloaded from the internet and should not be synced with iCloud.
+  1) The `/tmp` directory can be cleaned once in a while to make sure that any partial, cancelled or failed downloads get properly disposed of and do not occupy space both on the device and in iTunes backups.
+  2) The Caches directory is not synced by default with the user's iCloud documents. This is in compliance with Apple's rules about content that – not being user-specific – can be re-downloaded from the internet and should not be synced with iCloud.
 
 If a directory name is provided, a new sub-directory will be created in the Cached directory.
 
-Once the file is finished downloading, if a name was provided by the user, it will be used to store the file in its final destination. If no name was provided the manager will use by default the last path component of the URL string (e.g. for `http://www.example.com/files/my_file.zip`, the final file name would be `my_file.zip`).
+- `fileName` : Once the file is finished downloading, if a `fileName` was provided by the user, it will be used to store the file in its final destination. If no name was provided the manager will use by default the suggested file name that comes in the response parameter OR last path component of the URL string (e.g. for `http://www.example.com/files/my_image.jpg`, the final file name would be `my_image.jpg`).
 
+- `progressBlock` : Called back with a `CGFloat` value ranging from 0 to 1.0 when the download progresses.
+
+- `completionBlock` : Called back with two parameters `error` and `fileUrl`.
+    - If the download was successful, `fileUrl` represents the URL of the file. The file can be accessed using this url.
+    - If the download was unsuccessful, `error` represents the error that occured in the downloading process.
+      
 ### Checking for current downloads 
 
 To check if a file is being downloaded, you can use one of the following methods:
