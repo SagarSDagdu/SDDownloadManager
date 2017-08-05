@@ -1,6 +1,6 @@
 //
 //  SDFileUtils.swift
-//  TestProject
+//  SDDownloadManager
 //
 //  Created by Sagar Dagdu on 8/5/17.
 //  Copyright © 2017 Sagar Dagdu. All rights reserved.
