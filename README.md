@@ -23,10 +23,10 @@ Run `pod install` to install the dependencies.
 
 ## Usage
 
-`SDDownloadManager` provides facilities for the following task:
+`SDDownloadManager` provides APIs for the following tasks:
 
 - Downloading multiple files asynchronusly to your specified directory.
-- Keeping track of download progress and download completion via block syntax, no need to implement delegates!
+- Keeping track of download progress and download completion via closure syntax, no need to implement delegates!
 
 
 ### Downloading files
@@ -104,4 +104,4 @@ Usage is provided under the [MIT License](http://opensource.org/licenses/mit-lic
 
 ## Contributions
 
-All contributions are welcome. Please fork the project to add functionalities and open a pull request to have them merged into the master branch in the next releases.
+All contributions are welcome. Please fork the project to add functionalities and submit a pull request to merge them in next releases.
