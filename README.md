@@ -38,7 +38,7 @@ Run `pod install` to install the dependencies.
                             onProgress progressBlock:DownloadProgressBlock? = nil,
                             onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
 
-### Parameters :
+#### Parameters :
 
 - `request` : A `URLRequest` which represents a downloadable resource.
 
@@ -59,7 +59,7 @@ If a directory name is provided, a new sub-directory will be created in the Cach
     - If the download was successful, `fileUrl` represents the URL of the file. The file can be accessed using this url.
     - If the download was unsuccessful, `error` represents the error that occured in the downloading process.
     
-### return
+#### return
 
 - The method returns a key which is unique to that download call. Ideally, this key can be used later for cancelling the download or altering the progress block of a specific download.  ***If a download with the speicied urlrequest already exists, this method returns `nil`.***
       
@@ -67,20 +67,27 @@ If a directory name is provided, a new sub-directory will be created in the Cach
 
 To check if a file is being downloaded, you can use one of the following methods:
 
-As with the previous download methods, you get a chance to be called back for progress and completion.
+    public func isDownloadInProgress(forKey key:String?) -> Bool
 
-To retrieve a list of current files being downloaded, you can use the following:
+To get all the dowloads that are in progress:
 
+    public func currentDownloads() -> [String]
 
-This method returns an array of `NSString` objects with the URLs of the current downloads being performed.
+To alter the blocks of an ongoing download:
 
-### Canceling downloads
+    public func alterBlocksForOngoingDownload(withUniqueKey key:String?,
+                                     setProgress progressBlock:DownloadProgressBlock?,
+                                     setCompletion completionBlock:@escaping DownloadCompletionBlock)
+### Cancelling downloads
 
-The downloads, which are uniquely referenced by the download manager by the provided URL, can either be canceled singularly or all together with a single call via one of the two following methods:
+To cancel all downloads:
 
+    public func cancelAllDownloads()
 
+To cancel a specific download:
 
-
+    public func cancelDownload(forUniqueKey key:String?)
+                                  
 ## Requirements
 
 `SDDownloadManager` requires iOS 9.x or greater.
