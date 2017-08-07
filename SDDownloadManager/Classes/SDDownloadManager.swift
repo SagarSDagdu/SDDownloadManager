@@ -25,7 +25,7 @@
 
 import UIKit
 
-final class SDDownloadManager: NSObject {
+final public class SDDownloadManager: NSObject {
     
     public typealias DownloadCompletionBlock = (_ error : Error?, _ fileUrl:URL?) -> Void
     public typealias DownloadProgressBlock = (_ progress : CGFloat) -> Void
@@ -127,7 +127,7 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
     
     // MARK:- Delegates
     
-    internal func urlSession(_ session: URLSession,
+    public func urlSession(_ session: URLSession,
                              downloadTask: URLSessionDownloadTask,
                              didFinishDownloadingTo location: URL) {
         
@@ -159,7 +159,7 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         self.ongoingDownloads.removeValue(forKey:key)
     }
     
-    internal func urlSession(_ session: URLSession,
+    public func urlSession(_ session: URLSession,
                              downloadTask: URLSessionDownloadTask,
                              didWriteData bytesWritten: Int64,
                              totalBytesWritten: Int64,
@@ -174,7 +174,7 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         }
     }
     
-    internal func urlSession(_ session: URLSession,
+    public func urlSession(_ session: URLSession,
                              task: URLSessionTask,
                              didCompleteWithError error: Error?) {
         
