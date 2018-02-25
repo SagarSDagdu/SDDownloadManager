@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'SDDownloadManager'
-s.version          = '1.0.4'
+s.version          = '1.0.3'
 s.summary          = 'A simple, robust and elegant download manager written in Swift'
 
 s.description      = <<-DESC
