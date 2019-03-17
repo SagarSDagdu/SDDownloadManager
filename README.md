@@ -71,7 +71,15 @@ If a directory name is provided, a new sub-directory will be created in the Cach
 
 ### Downloading files in background
 
-The parameter `shouldDownloadInBackground` decides whether the download should occur using a background session.
+The parameter `shouldDownloadInBackground` to the method `downloadFile()` decides whether the download should occur using a background session.
+For background downloads to be supported, add this to your `AppDelegate`
+
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+        debugPrint("handleEventsForBackgroundURLSession: \(identifier)")
+        SDDownloadManager.shared.backgroundCompletionHandler = completionHandler
+    }
+
+If you want to show a local notification after all background downloads finish, set `showLocalNotificationOnBackgroundDownloadDone` to `true`. You can set the text of local notification using `localNotificationText` property, Refer the following snippet : 
 
     SDDownloadManager.shared.showLocalNotificationOnBackgroundDownloadDone = true //Set this if you want to issue a local notification when all the background downloads complete.
     SDDownloadManager.shared.localNotificationText = "All background downloads complete" //Text for the local notification
