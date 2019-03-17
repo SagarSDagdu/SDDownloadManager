@@ -120,7 +120,7 @@ To cancel a specific download:
 ## Future Enhancements
 
 I'm planning to integrate the following features in upcoming releases :
-- Background Downloads.
+- ~~Background Downloads.~~ (Now supported starting from version 1.1.0)
 - Resumable Downloads.
 - A better and clean example project with more demonstration. (It will be great if I get some help in this from those who are actually using it!)
 
