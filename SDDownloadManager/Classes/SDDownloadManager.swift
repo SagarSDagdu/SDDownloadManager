@@ -24,33 +24,46 @@
 //  THE SOFTWARE.
 
 import UIKit
+import UserNotifications
 
 final public class SDDownloadManager: NSObject {
     
     public typealias DownloadCompletionBlock = (_ error : Error?, _ fileUrl:URL?) -> Void
     public typealias DownloadProgressBlock = (_ progress : CGFloat) -> Void
+    public typealias BackgroundDownloadCompletionHandler = () -> Void
     
     // MARK :- Properties
     
-    var session: URLSession = URLSession()
-    var ongoingDownloads: [String : SDDownloadObject] = [:]
+    private var session: URLSession!
+    private var ongoingDownloads: [String : SDDownloadObject] = [:]
+    private var backgroundSession: URLSession!
+    
+    public var backgroundCompletionHandler: BackgroundDownloadCompletionHandler?
+    public var showLocalNotificationOnBackgroundDownloadDone = true
+    public var localNotificationText: String?
 
     public static let shared: SDDownloadManager = { return SDDownloadManager() }()
 
     //MARK:- Public methods
     
-    public func dowloadFile(withRequest request: URLRequest,
+    public func downloadFile(withRequest request: URLRequest,
                             inDirectory directory: String? = nil,
                             withName fileName: String? = nil,
+                            shouldDownloadInBackground: Bool = false,
                             onProgress progressBlock:DownloadProgressBlock? = nil,
                             onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? {
         
         if let _ = self.ongoingDownloads[(request.url?.absoluteString)!] {
-            print("Already in progress")
+            debugPrint("Already in progress")
             return nil
         }
+        var downloadTask: URLSessionDownloadTask
+        if shouldDownloadInBackground {
+            downloadTask = self.backgroundSession.downloadTask(with: request)
+        } else{
+            downloadTask = self.session.downloadTask(with: request)
+        }
         
-        let downloadTask = self.session.downloadTask(with: request)
         let download = SDDownloadObject(downloadTask: downloadTask,
                                         progressBlock: progressBlock,
                                         completionBlock: completionBlock,
@@ -109,6 +122,8 @@ final public class SDDownloadManager: NSObject {
         super.init()
         let sessionConfiguration = URLSessionConfiguration.default
         self.session = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
+        let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: Bundle.main.bundleIdentifier!)
+        self.backgroundSession = URLSession(configuration: backgroundConfiguration, delegate: self, delegateQueue: OperationQueue())
     }
 
     private func isDownloadInProgress(forUniqueKey key:String?) -> (Bool, SDDownloadObject?) {
@@ -121,6 +136,29 @@ final public class SDDownloadManager: NSObject {
         return (false, nil)
     }
     
+    private func showLocalNotification(withText text:String) {
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.getNotificationSettings { (settings) in
+            guard settings.authorizationStatus == .authorized else {
+                debugPrint("Not authorized to schedule notification")
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = text
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1,
+                                                            repeats: false)
+            let identifier = "SDDownloadManagerNotification"
+            let request = UNNotificationRequest(identifier: identifier,
+                                                content: content, trigger: trigger)
+            notificationCenter.add(request, withCompletionHandler: { (error) in
+                if let error = error {
+                    debugPrint("Could not schedule notification, error : \(error)")
+                }
+            })
+        }
+    }
 }
 
 extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
@@ -164,6 +202,10 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
                              didWriteData bytesWritten: Int64,
                              totalBytesWritten: Int64,
                              totalBytesExpectedToWrite: Int64) {
+        guard totalBytesExpectedToWrite > 0 else {
+            debugPrint("Could not calculate progress as totalBytesExpectedToWrite is less than 0")
+            return;
+        }
         
         if let download = self.ongoingDownloads[(downloadTask.originalRequest?.url?.absoluteString)!],
             let progressBlock = download.progressBlock {
@@ -190,4 +232,26 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         }
     }
 
+    public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        session.getTasksWithCompletionHandler { (dataTasks, uploadTasks, downloadTasks) in
+            if downloadTasks.count == 0 {
+                OperationQueue.main.addOperation({
+                    if let completion = self.backgroundCompletionHandler {
+                        completion()
+                    }
+                    
+                    if self.showLocalNotificationOnBackgroundDownloadDone {
+                        var notificationText = "Download completed"
+                        if let userNotificationText = self.localNotificationText {
+                            notificationText = userNotificationText
+                        }
+                        
+                        self.showLocalNotification(withText: notificationText)
+                    }
+                    
+                    self.backgroundCompletionHandler = nil
+                })
+            }
+        }
+    }
 }

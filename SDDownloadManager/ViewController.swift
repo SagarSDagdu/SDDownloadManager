@@ -33,26 +33,37 @@ class ViewController: UIViewController {
     @IBOutlet weak var progressLabel: UILabel!
     @IBOutlet weak var finalUrlLabel: UILabel!
     
+    private let downloadManager = SDDownloadManager.shared
     let directoryName : String = "TestDirectory"
+    
+    let fiveMBUrl = "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_5mb.mp4"
+    let tenMBUrl = "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_10mb.mp4"
     
     //MARK:- Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.setupUI()
+        self.foregrounDownloadDemo()
+        self.backgroundDownloadDemo()
+    }
+    
+    private func setupUI() {
         self.progressView.setProgress(0, animated: false)
         self.progressLabel.text = "0.0 %"
         self.finalUrlLabel.text = ""
+    }
+    
+    private func foregrounDownloadDemo() {
+        let request = URLRequest(url: URL(string: self.fiveMBUrl)!)
         
-        let request = URLRequest.init(url: URL.init(string: "http://www.sample-videos.com/video/3gp/144/big_buck_bunny_144p_5mb.3gp")!)
-        
-        let downloadKey = SDDownloadManager.shared.dowloadFile(withRequest: request,
-                                                               inDirectory: directoryName,
-                                                               withName: nil,
-                                                               onProgress:  { [weak self] (progress) in
-                                                                let percentage = String(format: "%.1f %", (progress * 100))
-                                                                self?.progressView.setProgress(Float(progress), animated: true)
-                                                                self?.progressLabel.text = "\(percentage) %"
+        let downloadKey = self.downloadManager.downloadFile(withRequest: request,
+                                                           inDirectory: directoryName,
+                                                           onProgress:  { [weak self] (progress) in
+                                                            let percentage = String(format: "%.1f %", (progress * 100))
+                                                            self?.progressView.setProgress(Float(progress), animated: true)
+                                                            self?.progressLabel.text = "\(percentage) %"
         }) { [weak self] (error, url) in
             if let error = error {
                 print("Error is \(error as NSError)")
@@ -65,10 +76,29 @@ class ViewController: UIViewController {
         }
         
         print("The key is \(downloadKey!)")
-        
-        
     }
     
-
+    private func backgroundDownloadDemo() {
+        let request = URLRequest(url: URL(string: self.tenMBUrl)!)
+        
+        self.downloadManager.showLocalNotificationOnBackgroundDownloadDone = true
+        self.downloadManager.localNotificationText = "All background downloads complete"
+        
+        let downloadKey = self.downloadManager.downloadFile(withRequest: request, inDirectory: directoryName, withName: directoryName, shouldDownloadInBackground: true, onProgress: { (progress) in
+            let percentage = String(format: "%.1f %", (progress * 100))
+            debugPrint("Background progress : \(percentage)")
+        }) { [weak self] (error, url) in
+            if let error = error {
+                print("Error is \(error as NSError)")
+            } else {
+                if let url = url {
+                    print("Downloaded file's url is \(url.path)")
+                    self?.finalUrlLabel.text = url.path
+                }
+            }
+        }
+        
+        print("The key is \(downloadKey!)")
+    }
 }
 
