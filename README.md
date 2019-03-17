@@ -6,6 +6,9 @@ A simple and robust download manager for iOS (Swift 4) based on `URLSession` to 
 
 `SDDownloadManager` is a singleton instance and can thus be called in your code safely from wherever you need to. The idea of writing yet another download manager library stemmed from the fact there are no available open source projects written using Swift based on the new `URLSession` APIs.
 
+***Background downloads are supported starting from version 1.1.0*** 
+
+
 `SDDownloadManager` leverages the power of `URLSession` and `URLSessionDownloadTask` to make downloading of files and keeping track of their progress a breeze. Originally inspired by TWRDownloadManager (https://github.com/chasseurmic/TWRDownloadManager)
 
 - - - 
@@ -58,9 +61,32 @@ If a directory name is provided, a new sub-directory will be created in the Cach
     - If the download was successful, `fileUrl` represents the URL of the file. The file can be accessed using this url.
     - If the download was unsuccessful, `error` represents the error that occured in the downloading process.
     
+#### Calling this method
+
+    SDDownloadManager.shared.downloadFile( /*Params */)
+    
 #### return
 
 - The method returns a key which is unique to that download call. Ideally, this key can be used later for cancelling the download or altering the progress block of a specific download.  ***If a download with the speicied urlrequest already exists, this method returns `nil`.***
+
+### Downloading files in background
+
+The parameter `shouldDownloadInBackground` decides whether the download should occur using a background session.
+
+    SDDownloadManager.shared.showLocalNotificationOnBackgroundDownloadDone = true //Set this if you want to issue a local notification when all the background downloads complete.
+    SDDownloadManager.shared.localNotificationText = "All background downloads complete" //Text for the local notification
+    let downloadKey = SDDownloadManager.shared.downloadFile(withRequest: request, inDirectory: directoryName, withName: directoryName, shouldDownloadInBackground: true, onProgress: { (progress) in
+            let percentage = String(format: "%.1f %", (progress * 100))
+            debugPrint("Background progress : \(percentage)")
+        }) { [weak self] (error, url) in
+            if let error = error {
+                print("Error is \(error as NSError)")
+            } else {
+                if let url = url {
+                    print("Downloaded file's url is \(url.path)")
+                }
+            }
+        }
       
 ### Checking for current downloads 
 
