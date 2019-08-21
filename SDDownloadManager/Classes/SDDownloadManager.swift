@@ -104,9 +104,9 @@ final public class SDDownloadManager: NSObject {
         return downloadStatus.0
     }
     
-    public func alterBlocksForOngoingDownload(withUniqueKey key:String?,
-                                     setProgress progressBlock:DownloadProgressBlock?,
-                                     setCompletion completionBlock:@escaping DownloadCompletionBlock) {
+    public func alterDownload(withKey key: String?,
+                              onProgress progressBlock:DownloadProgressBlock?,
+                              onCompletion completionBlock:@escaping DownloadCompletionBlock) {
         let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
         let presence = downloadStatus.0
         if presence {
