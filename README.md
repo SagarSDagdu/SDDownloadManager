@@ -108,9 +108,9 @@ To get all the dowloads that are in progress:
 
 To alter the blocks of an ongoing download:
 
-    public func alterBlocksForOngoingDownload(withUniqueKey key:String?,
-                                     setProgress progressBlock:DownloadProgressBlock?,
-                                     setCompletion completionBlock:@escaping DownloadCompletionBlock)
+    public func alterDownload(withKey key:String?,
+                              onProgress progressBlock:DownloadProgressBlock?,
+                              onCompletion completionBlock:@escaping DownloadCompletionBlock)
 ### Cancelling downloads
 
 To cancel all downloads:

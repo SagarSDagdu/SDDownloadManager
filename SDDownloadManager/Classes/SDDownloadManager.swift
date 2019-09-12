@@ -53,7 +53,12 @@ final public class SDDownloadManager: NSObject {
                             onProgress progressBlock:DownloadProgressBlock? = nil,
                             onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? {
         
-        if let _ = self.ongoingDownloads[(request.url?.absoluteString)!] {
+        guard let url = request.url else {
+            debugPrint("Request url is empty")
+            return nil
+        }
+        
+        if let _ = self.ongoingDownloads[url.absoluteString] {
             debugPrint("Already in progress")
             return nil
         }
@@ -69,11 +74,15 @@ final public class SDDownloadManager: NSObject {
                                         completionBlock: completionBlock,
                                         fileName: fileName,
                                         directoryName: directory)
-        
-        let key = (request.url?.absoluteString)!
+
+        let key = self.getDownloadKey(withUrl: url)
         self.ongoingDownloads[key] = download
         downloadTask.resume()
         return key;
+    }
+    
+    public func getDownloadKey(withUrl url: URL) -> String {
+        return url.absoluteString
     }
     
     public func currentDownloads() -> [String] {
@@ -104,9 +113,9 @@ final public class SDDownloadManager: NSObject {
         return downloadStatus.0
     }
     
-    public func alterBlocksForOngoingDownload(withUniqueKey key:String?,
-                                     setProgress progressBlock:DownloadProgressBlock?,
-                                     setCompletion completionBlock:@escaping DownloadCompletionBlock) {
+    public func alterDownload(withKey key: String?,
+                              onProgress progressBlock:DownloadProgressBlock?,
+                              onCompletion completionBlock:@escaping DownloadCompletionBlock) {
         let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
         let presence = downloadStatus.0
         if presence {
