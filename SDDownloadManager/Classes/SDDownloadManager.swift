@@ -108,6 +108,26 @@ final public class SDDownloadManager: NSObject {
         }
     }
     
+    public func pause(forUniqueKey key:String?) {
+        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
+        let presence = downloadStatus.0
+        if presence {
+            if let download = downloadStatus.1 {
+                let downloadTask = download.downloadTask
+                downloadTask.suspend()
+            }}
+    }
+    
+    public func resume(forUniqueKey key:String?) {
+        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
+        let presence = downloadStatus.0
+        if presence {
+            if let download = downloadStatus.1 {
+                let downloadTask = download.downloadTask
+                downloadTask.resume()
+            }}
+    }
+    
     public func isDownloadInProgress(forKey key:String?) -> Bool {
         let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
         return downloadStatus.0
