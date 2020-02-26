@@ -23,28 +23,36 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
 
-import UIKit
+/// Represents a download.
+final class SDDownloadModel {
 
-class SDDownloadObject: NSObject {
-
-    var completionBlock: SDDownloadManager.DownloadCompletionBlock
-    var progressBlock: SDDownloadManager.DownloadProgressBlock?
-    let downloadTask: URLSessionDownloadTask
-    let directoryName: String?
-    let fileName:String?
+    //MARK:- Public
     
-    init(downloadTask: URLSessionDownloadTask,
-         progressBlock: SDDownloadManager.DownloadProgressBlock?,
-         completionBlock: @escaping SDDownloadManager.DownloadCompletionBlock,
+    /// Called when the download is completed. If no error occurs, then the second parameter passed is the URL of the downloaded file
+    var completionBlock: CompletionHandler? = nil
+    
+    /// Called when the download progresses. The progress is a ```CGFloat```
+    var progressBlock: ProgressHandler? = nil
+    
+    /// The download task associated with this model
+    var downloadTask: URLSessionDownloadTask
+    
+    /// The destination directory path where the downloaded file should be moved
+    var destinationPath: String? = nil
+    
+    /// The fileName to be used when the download is complete.
+    var fileName:String? = nil
+    
+    //MARK:- Initialization
+    
+    init(withTask downloadTask: URLSessionDownloadTask,
          fileName: String?,
-         directoryName: String?) {
-        
+         destinationPath: String?) {
         self.downloadTask = downloadTask
-        self.completionBlock = completionBlock
-        self.progressBlock = progressBlock
         self.fileName = fileName
-        self.directoryName = directoryName
+        self.destinationPath = destinationPath
     }
     
 }
