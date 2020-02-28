@@ -86,7 +86,7 @@ final public class SDDownloadManager: NSObject {
         }
         
         ///Is already in progress
-        if let _ = self.ongoingDownloads[url.absoluteString] {
+        if let _ = ongoingDownloads[url.absoluteString] {
             debugPrint("Already in progress")
             return nil
         }
@@ -238,7 +238,7 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         }
         
         if let key = downloadTask.originalRequest?.url?.absoluteString,
-            let download = self.ongoingDownloads[key],
+            let download = ongoingDownloads[key],
             let progressBlock = download.progressBlock {
             let progress : CGFloat = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)
             MainQueue {
@@ -255,12 +255,12 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         
         if let error = error,
             let key = key,
-            let download = self.ongoingDownloads[key] {
+            let download = ongoingDownloads[key] {
                 MainQueue {
                     download.completionBlock?(SDDownloadError.raw(error: error), nil)
                 }
             }
-        if let key = key { self.ongoingDownloads[key] = nil }
+        if let key = key { ongoingDownloads[key] = nil }
     }
 
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
