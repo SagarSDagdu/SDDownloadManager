@@ -115,54 +115,27 @@ final public class SDDownloadManager: NSObject {
         ongoingDownloads.removeAll()
     }
     
-    public func cancelDownload(forUniqueKey key:String?) {
-        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
-        let presence = downloadStatus.0
-        if presence {
-            if let download = downloadStatus.1 {
-                download.downloadTask.cancel()
-                self.ongoingDownloads.removeValue(forKey: key!)
-            }
+    public func cancelDownload(forUniqueKey key:String) {
+        if let ongoingDownload = getOngoingDownload(forKey: key) {
+            ongoingDownload.downloadTask.cancel()
+            ongoingDownloads[key] = nil
         }
     }
     
-    public func pause(forUniqueKey key:String?) {
-        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
-        let presence = downloadStatus.0
-        if presence {
-            if let download = downloadStatus.1 {
-                let downloadTask = download.downloadTask
-                downloadTask.suspend()
-            }}
-    }
-    
-    public func resume(forUniqueKey key:String?) {
-        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
-        let presence = downloadStatus.0
-        if presence {
-            if let download = downloadStatus.1 {
-                let downloadTask = download.downloadTask
-                downloadTask.resume()
-            }}
-    }
-    
-    public func isDownloadInProgress(forKey key:String?) -> Bool {
-        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
-        return downloadStatus.0
-    }
-    
-    public func alterDownload(withKey key: String?,
-                              onProgress progressBlock:ProgressHandler?,
-                              onCompletion completionBlock:@escaping CompletionHandler) {
-        let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
-        let presence = downloadStatus.0
-        if presence {
-            if let download = downloadStatus.1 {
-                download.progressBlock = progressBlock
-                download.completionBlock = completionBlock
-            }
+    public func pause(forUniqueKey key:String) {
+        if let ongoingDownload = getOngoingDownload(forKey: key) {
+            ongoingDownload.downloadTask.suspend()
+            ongoingDownloads[key] = nil
         }
     }
+    
+    public func resume(forUniqueKey key:String) {
+        if let ongoingDownload = getOngoingDownload(forKey: key) {
+            ongoingDownload.downloadTask.resume()
+            ongoingDownloads[key] = nil
+        }
+    }
+    
     //MARK:- Private methods
     
     private func backgroundSession(identifier: String,
@@ -172,16 +145,13 @@ final public class SDDownloadManager: NSObject {
         return session
     }
     
-    private func isDownloadInProgress(forUniqueKey key:String?) -> (Bool, SDDownloadModel?) {
-        guard let key = key else { return (false, nil) }
-        
-        if let downloadEntry = ongoingDownloads.first(where: { (taskKey, _) -> Bool in
+    private func getOngoingDownload(forKey key: String) -> SDDownloadModel? {
+        if let ongoingDownload = ongoingDownloads.first(where: { (taskKey, downloadModel) -> Bool in
             return key == taskKey
         }) {
-            return (true, downloadEntry.value)
-        } else {
-            return (false, nil)
+            return ongoingDownload.value
         }
+        return nil
     }
     
     private func showLocalNotification(withText text:String) {
