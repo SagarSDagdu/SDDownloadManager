@@ -78,4 +78,14 @@ class SDFileUtils: NSObject {
         return false
     }
     
+    ///Moves file from `sourceUrl` to `destinationUrl`
+    static func moveFile(from sourceUrl: URL, to destinationUrl: URL) throws {
+        try FileManager.default.moveItem(at: sourceUrl, to: destinationUrl)
+    }
+    
+    ///Copies file from `sourceUrl` to `destinationUrl`
+    static func copyFile(from sourceUrl: URL, to destinationUrl: URL) throws {
+        try FileManager.default.copyItem(at: sourceUrl, to: destinationUrl)
+    }
+    
 }

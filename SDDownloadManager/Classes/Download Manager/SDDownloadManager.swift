@@ -42,6 +42,7 @@ public enum SDDownloadError: Error {
     case invalidURL
     case raw(error: Error)
     case invalidDestinationDirectory
+    case fileOperationError(error: Error)
 }
 
 final public class SDDownloadManager: NSObject {
@@ -209,10 +210,15 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         
         let fileName = downloadModel.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent) ?? "UnknownFile"
         
-        if let locationDirectory = downloadModel.destinationPath {
-            debugPrint("destination supplied by user: \(locationDirectory) ")
-            //TODO 1) Move the file to user supplied directory
-            //     2) Hande directory not present condition
+        if let destinationPath = downloadModel.destinationPath {
+            debugPrint("destination supplied by user: \(destinationPath) ")
+            do {
+                try SDFileUtils.moveFile(from: location, to: URL(fileURLWithPath: destinationPath))
+            } catch {
+                MainQueue {
+                    downloadModel.completionBlock?(SDDownloadError.fileOperationError(error: error), nil)
+                }
+            }
         } else {
             let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: nil, withName: fileName)
             let didSucceed = fileMovingResult.0
