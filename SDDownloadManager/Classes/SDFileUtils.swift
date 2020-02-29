@@ -68,4 +68,14 @@ class SDFileUtils: NSObject {
         }
     }
     
+    ///Checks whether the supplied path is a directory
+    static func doesDirectoryExist(at path: String) -> Bool {
+        var isDirectory : ObjCBool = false
+        if FileManager.default.fileExists(atPath: path, isDirectory:&isDirectory) {
+            return isDirectory.boolValue
+        }
+        
+        return false
+    }
+    
 }
