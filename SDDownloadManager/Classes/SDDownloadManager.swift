@@ -41,6 +41,7 @@ public enum SDDownloadError: Error {
     /// The supplied URLRequest doesn't contain a valid URL
     case invalidURL
     case raw(error: Error)
+    case invalidDestinationDirectory
 }
 
 final public class SDDownloadManager: NSObject {
@@ -88,6 +89,12 @@ final public class SDDownloadManager: NSObject {
         ///Is already in progress
         if let _ = ongoingDownloads[url.absoluteString] {
             debugPrint("Already in progress")
+            return nil
+        }
+        
+        if let directory = destinationPath, !SDFileUtils.doesDirectoryExist(at: directory) {
+            debugPrint("The supplied destinationPath is not a directory")
+            completionBlock(SDDownloadError.invalidDestinationDirectory, nil)
             return nil
         }
         
