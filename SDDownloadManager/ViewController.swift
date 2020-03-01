@@ -65,11 +65,21 @@ class ViewController: UIViewController {
     
     private func downloadDemo() {
         let request = URLRequest(url: URL(string: self.tenMBUrl)!)
-        downloadManager.downloadFile(withRequest: request, atDestinationPath: nil, withName: nil, onProgress: { [weak self] (progress) in
+        let destination = (documentsDirectoryPath() as NSString).appendingPathComponent("SampleDownload")
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: destination) {
+            do {
+            try fileManager.createDirectory(atPath: destination, withIntermediateDirectories: true, attributes: [:])
+            } catch {
+                print("Error while creating directory")
+            }
+        }
+        
+        downloadManager.downloadFile(withRequest: request, atDestinationPath: destination, withName: nil, onProgress: { [weak self] (progress) in
             self?.setProgress(progress: progress)
         }) { [weak self] (error, url) in
             if let error = error {
-                print("Error is \(error as NSError)")
+                print("Error is \(error)")
             } else {
                 if let url = url {
                     print("Downloaded file's url is \(url.path)")
@@ -85,6 +95,10 @@ class ViewController: UIViewController {
         let percentage = String(format: "%.1f %", (progress * 100))
         self.progressView.setProgress(Float(progress), animated: true)
         self.progressLabel.text = "\(percentage) %"
+    }
+    
+    private func documentsDirectoryPath() -> String {
+        return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
     }
 
 }

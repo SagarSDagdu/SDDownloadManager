@@ -93,6 +93,13 @@ final public class SDDownloadManager: NSObject {
             return nil
         }
         
+        //Check whether we have the entry in cache and whether the file exists
+        if isCachingEnabled(), let cachedURL = getCachedLocation(for: url.absoluteString), FileManager.default.fileExists(atPath: cachedURL.absoluteString) {
+            MainQueue {
+                completionBlock(nil, cachedURL)
+            }
+        }
+        
         if let directory = destinationPath, !SDFileUtils.doesDirectoryExist(at: directory) {
             debugPrint("The supplied destinationPath is not a directory")
             completionBlock(SDDownloadError.invalidDestinationDirectory, nil)
@@ -202,38 +209,46 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
         
         if let response = downloadTask.response as? HTTPURLResponse,     !(200...299).contains(response.statusCode) {
             let error = NSError(domain:"HttpError", code: response.statusCode, userInfo:[NSLocalizedDescriptionKey : HTTPURLResponse.localizedString(forStatusCode: response.statusCode)])
-            MainQueue {
-                downloadModel.completionBlock?(SDDownloadError.raw(error: error), nil)
-                return
-            }
+            completion(downloadModel.completionBlock, error: SDDownloadError.raw(error: error), url: nil)
+            return
         }
         
         let fileName = downloadModel.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent) ?? "UnknownFile"
         
         if let destinationPath = downloadModel.destinationPath {
             debugPrint("destination supplied by user: \(destinationPath) ")
+            let destinationFileUrl = URL(fileURLWithPath: (destinationPath as NSString).appendingPathComponent(fileName))
             do {
-                try SDFileUtils.moveFile(from: location, to: URL(fileURLWithPath: destinationPath))
-            } catch {
-                MainQueue {
-                    downloadModel.completionBlock?(SDDownloadError.fileOperationError(error: error), nil)
+                try SDFileUtils.moveFile(from: location, to: destinationFileUrl)
+                completion(downloadModel.completionBlock, error: nil, url: destinationFileUrl)
+                if let requestUrl = downloadModel.downloadTask.originalRequest?.url?.absoluteString {
+                    self.writeToCache(for: requestUrl, url: destinationFileUrl)
                 }
+            } catch {
+                completion(downloadModel.completionBlock, error: SDDownloadError.fileOperationError(error: error), url: nil)
             }
         } else {
-            let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: nil, withName: fileName)
-            let didSucceed = fileMovingResult.0
-            let error = fileMovingResult.1
-            let finalFileUrl = fileMovingResult.2
-            
-            MainQueue { [weak self] in
-                if !didSucceed, let error = error  {
-                    downloadModel.completionBlock?(error, nil)
-                } else {
-                    downloadModel.completionBlock?(nil, finalFileUrl)
-                    if let fileUrl = finalFileUrl, self?.isCachingEnabled() == true {
-                        self?.writeToCache(for: key, url: fileUrl)
-                    }
+            let directoryName = String(describing: SDDownloadManager.self)
+            let destinationFileUrl = (SDFileUtils.cacheDirectoryPath() as NSString).appendingPathComponent(directoryName)
+            let fileManager = FileManager.default
+            if !fileManager.fileExists(atPath: destinationFileUrl) {
+                do {
+                    try fileManager.createDirectory(atPath: destinationFileUrl, withIntermediateDirectories: true, attributes: [:])
+                } catch {
+                    completion(downloadModel.completionBlock, error: SDDownloadError.fileOperationError(error: error), url: nil)
                 }
+            }
+            
+            do {
+                try fileManager.createDirectory(atPath: destinationFileUrl, withIntermediateDirectories: true, attributes: [:])
+                let destinationURL = URL(fileURLWithPath: destinationFileUrl)
+                try SDFileUtils.moveFile(from: location, to: destinationURL)
+                completion(downloadModel.completionBlock, error: nil, url: destinationURL)
+                if let requestUrl = downloadModel.downloadTask.originalRequest?.url?.absoluteString {
+                    self.writeToCache(for: requestUrl, url: destinationURL)
+                }
+            } catch {
+                completion(downloadModel.completionBlock, error: SDDownloadError.fileOperationError(error: error), url: nil)
             }
         }
         
@@ -293,6 +308,12 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
                     self?.backgroundCompletionHandler = nil
                 }
             }
+        }
+    }
+    
+    private func completion(_ block: CompletionHandler?, error: SDDownloadError?, url: URL?) {
+        MainQueue {
+            block?(error, url)
         }
     }
 }

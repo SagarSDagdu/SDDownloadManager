@@ -10,7 +10,6 @@
 		ACCC0C8D2405613A00E0E0DC /* SDDownloadManagerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCC0C8C2405613A00E0E0DC /* SDDownloadManagerConfig.swift */; };
 		ACCC0C91240567DE00E0E0DC /* SDDownloadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCC0C90240567DE00E0E0DC /* SDDownloadModel.swift */; };
 		ACCC0C9324056F6900E0E0DC /* GlobalUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCC0C9224056F6900E0E0DC /* GlobalUtils.swift */; };
-		ACCC0C97240AC3E800E0E0DC /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCC0C96240AC3E800E0E0DC /* Cache.swift */; };
 		ACE3B6851F35D5BA00684BE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE3B6841F35D5BA00684BE6 /* AppDelegate.swift */; };
 		ACE3B6871F35D5BA00684BE6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE3B6861F35D5BA00684BE6 /* ViewController.swift */; };
 		ACE3B68A1F35D5BA00684BE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE3B6881F35D5BA00684BE6 /* Main.storyboard */; };
@@ -25,7 +24,6 @@
 		ACCC0C8C2405613A00E0E0DC /* SDDownloadManagerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDDownloadManagerConfig.swift; sourceTree = "<group>"; };
 		ACCC0C90240567DE00E0E0DC /* SDDownloadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDDownloadModel.swift; sourceTree = "<group>"; };
 		ACCC0C9224056F6900E0E0DC /* GlobalUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalUtils.swift; sourceTree = "<group>"; };
-		ACCC0C96240AC3E800E0E0DC /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		ACE3B6811F35D5BA00684BE6 /* SDDownloadManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDDownloadManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACE3B6841F35D5BA00684BE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACE3B6861F35D5BA00684BE6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,14 +55,6 @@
 				ACCC0C8C2405613A00E0E0DC /* SDDownloadManagerConfig.swift */,
 			);
 			path = "Download Manager";
-			sourceTree = "<group>";
-		};
-		ACCC0C95240ABF5600E0E0DC /* Caching */ = {
-			isa = PBXGroup;
-			children = (
-				ACCC0C96240AC3E800E0E0DC /* Cache.swift */,
-			);
-			path = Caching;
 			sourceTree = "<group>";
 		};
 		ACE3B6781F35D5BA00684BE6 = {
@@ -101,7 +91,6 @@
 		ACE3B6961F35D5E500684BE6 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				ACCC0C95240ABF5600E0E0DC /* Caching */,
 				ACCC0C94240ABF3F00E0E0DC /* Download Manager */,
 				ACE3B6991F35D62E00684BE6 /* SDFileUtils.swift */,
 				ACCC0C9224056F6900E0E0DC /* GlobalUtils.swift */,
@@ -192,7 +181,6 @@
 			files = (
 				ACCC0C91240567DE00E0E0DC /* SDDownloadModel.swift in Sources */,
 				ACE3B69C1F35D62E00684BE6 /* SDFileUtils.swift in Sources */,
-				ACCC0C97240AC3E800E0E0DC /* Cache.swift in Sources */,
 				ACE3B6871F35D5BA00684BE6 /* ViewController.swift in Sources */,
 				ACCC0C8D2405613A00E0E0DC /* SDDownloadManagerConfig.swift in Sources */,
 				ACE3B6851F35D5BA00684BE6 /* AppDelegate.swift in Sources */,
