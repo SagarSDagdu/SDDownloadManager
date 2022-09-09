@@ -6,6 +6,6 @@ let package = Package(name: "SDDownloadManager",
                       products: [.library(name: "SDDownloadManager",
                                           targets: ["SDDownloadManager"])],
                       targets: [.target(name: "SDDownloadManager",
-                                        path: "SDDownloadManager/Classes", sources:["SDDownloadManager/Classes"]),
+                                        path: "SDDownloadManager/Classes"),
                                 ]
                       )
