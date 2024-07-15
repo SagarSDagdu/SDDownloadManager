@@ -101,9 +101,9 @@ final public class SDDownloadManager: NSObject {
         let downloadStatus = self.isDownloadInProgress(forUniqueKey: key)
         let presence = downloadStatus.0
         if presence {
-            if let download = downloadStatus.1 {
+            if let download = downloadStatus.1, let key = key {
                 download.downloadTask.cancel()
-                self.ongoingDownloads.removeValue(forKey: key!)
+                self.ongoingDownloads.removeValue(forKey: key)
             }
         }
     }
@@ -198,31 +198,27 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
                              downloadTask: URLSessionDownloadTask,
                              didFinishDownloadingTo location: URL) {
         
-        let key = (downloadTask.originalRequest?.url?.absoluteString)!
-        if let download = self.ongoingDownloads[key]  {
-            if let response = downloadTask.response {
-                let statusCode = (response as! HTTPURLResponse).statusCode
-                
-                guard statusCode < 400 else {
-                    let error = NSError(domain:"HttpError", code:statusCode, userInfo:[NSLocalizedDescriptionKey : HTTPURLResponse.localizedString(forStatusCode: statusCode)])
-                    OperationQueue.main.addOperation({
-                        download.completionBlock(error,nil)
-                    })
-                    return
-                }
-                let fileName = download.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent)!
-                let directoryName = download.directoryName
-                
-                let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: directoryName, withName: fileName)
-                let didSucceed = fileMovingResult.0
-                let error = fileMovingResult.1
-                let finalFileUrl = fileMovingResult.2
-                
-                OperationQueue.main.addOperation({
-                    (didSucceed ? download.completionBlock(nil,finalFileUrl) : download.completionBlock(error,nil))
-                })
-            }
+        guard let key = (downloadTask.originalRequest?.url?.absoluteString) else { return }
+        guard let download = self.ongoingDownloads[key] else { return }
+        guard let response = downloadTask.response else { return }
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { return }
+        guard statusCode < 400 else {
+            let error = NSError(domain:"HttpError", code:statusCode, userInfo:[NSLocalizedDescriptionKey : HTTPURLResponse.localizedString(forStatusCode: statusCode)])
+            OperationQueue.main.addOperation({
+                download.completionBlock(error,nil)
+            })
+            return
         }
+        guard let fileName = download.fileName ?? downloadTask.response?.suggestedFilename ?? (downloadTask.originalRequest?.url?.lastPathComponent) else { return }
+        let directoryName = download.directoryName
+        let fileMovingResult = SDFileUtils.moveFile(fromUrl: location, toDirectory: directoryName, withName: fileName)
+        let didSucceed = fileMovingResult.0
+        let error = fileMovingResult.1
+        let finalFileUrl = fileMovingResult.2
+        
+        OperationQueue.main.addOperation({
+            (didSucceed ? download.completionBlock(nil,finalFileUrl) : download.completionBlock(error,nil))
+        })
         self.ongoingDownloads.removeValue(forKey:key)
     }
     
@@ -235,30 +231,32 @@ extension SDDownloadManager : URLSessionDelegate, URLSessionDownloadDelegate {
             debugPrint("Could not calculate progress as totalBytesExpectedToWrite is less than 0")
             return;
         }
+        guard let downloadTaskName = downloadTask.originalRequest?.url?.absoluteString else { return }
+        guard let download = self.ongoingDownloads[downloadTaskName] else { return }
+        guard let progressBlock = download.progressBlock else { return }
         
-        if let download = self.ongoingDownloads[(downloadTask.originalRequest?.url?.absoluteString)!],
-            let progressBlock = download.progressBlock {
-            let progress : CGFloat = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)
-            OperationQueue.main.addOperation({
-                progressBlock(progress)
-            })
-        }
+        let progress: CGFloat = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)
+        OperationQueue.main.addOperation({
+            progressBlock(progress)
+        })
     }
     
     public func urlSession(_ session: URLSession,
                              task: URLSessionTask,
                              didCompleteWithError error: Error?) {
         
-        if let error = error {
-            let downloadTask = task as! URLSessionDownloadTask
-            let key = (downloadTask.originalRequest?.url?.absoluteString)!
-            if let download = self.ongoingDownloads[key] {
-                OperationQueue.main.addOperation({
-                    download.completionBlock(error,nil)
-                })
-            }
-            self.ongoingDownloads.removeValue(forKey:key)
+        guard
+            let error = error,
+            let downloadTask = task as? URLSessionDownloadTask,
+            let key = (downloadTask.originalRequest?.url?.absoluteString),
+            let download = self.ongoingDownloads[key]
+        else {
+            return
         }
+        OperationQueue.main.addOperation({
+            download.completionBlock(error, nil)
+        })
+        self.ongoingDownloads.removeValue(forKey:key)
     }
 
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
