@@ -23,28 +23,25 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 import UIKit
 
 class SDDownloadObject: NSObject {
-
     var completionBlock: SDDownloadManager.DownloadCompletionBlock
     var progressBlock: SDDownloadManager.DownloadProgressBlock?
     let downloadTask: URLSessionDownloadTask
     let directoryName: String?
-    let fileName:String?
-    
+    let fileName: String?
+
     init(downloadTask: URLSessionDownloadTask,
          progressBlock: SDDownloadManager.DownloadProgressBlock?,
          completionBlock: @escaping SDDownloadManager.DownloadCompletionBlock,
          fileName: String?,
-         directoryName: String?) {
-        
+         directoryName: String?)
+    {
         self.downloadTask = downloadTask
         self.completionBlock = completionBlock
         self.progressBlock = progressBlock
         self.fileName = fileName
         self.directoryName = directoryName
     }
-    
 }
