@@ -35,8 +35,8 @@ class ViewController: UIViewController {
     private let downloadManager = SDDownloadManager.shared
     let directoryName: String = "TestDirectory"
 
-    let fiveMBUrl = "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_5mb.mp4"
-    let tenMBUrl = "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_10mb.mp4"
+    let fiveMBUrl = "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_5mb.mp4"
+    let tenMBUrl = "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_10mb.mp4"
 
     // MARK: - Lifecycle
 
@@ -45,7 +45,6 @@ class ViewController: UIViewController {
 
         setupUI()
         foregrounDownloadDemo()
-        backgroundDownloadDemo()
     }
 
     private func setupUI() {
@@ -55,7 +54,7 @@ class ViewController: UIViewController {
     }
 
     private func foregrounDownloadDemo() {
-        let request = URLRequest(url: URL(string: fiveMBUrl)!)
+        let request = URLRequest(url: URL(string: tenMBUrl)!)
 
         let downloadKey = downloadManager.downloadFile(withRequest: request,
                                                        inDirectory: directoryName,
@@ -77,6 +76,7 @@ class ViewController: UIViewController {
         print("The key is \(downloadKey!)")
     }
 
+    // Demo function for background download
     private func backgroundDownloadDemo() {
         let request = URLRequest(url: URL(string: tenMBUrl)!)
 
