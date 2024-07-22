@@ -2,7 +2,7 @@ SDDownloadManager
 =================
 ![alt text](/SDDownloadManager/sddwn.png)
 
-A simple and robust download manager for iOS (Swift 4) based on `URLSession` to deal with asynchronous downloading and management of multiple files.
+A simple and robust download manager for iOS (Swift 5) based on `URLSession` to deal with asynchronous downloading and management of multiple files.
 
 `SDDownloadManager` is a singleton instance and can thus be called in your code safely from wherever you need to. The idea of writing yet another download manager library stemmed from the fact there are no available open source projects written using Swift based on the new `URLSession` APIs.
 
@@ -13,13 +13,17 @@ A simple and robust download manager for iOS (Swift 4) based on `URLSession` to 
 
 - - - 
 
+## Minimum iOS version support
+
+iOS 12.0
+
 ## Installing the library
 
 To use the library, just add the dependency to your `Podfile`:
 
 ```ruby
 platform :ios
-pod 'SDDownloadManager'
+pod 'SDDownloadManager', '2.0.0'
 ```
 
 Run `pod install` to install the dependencies.
@@ -34,11 +38,13 @@ Run `pod install` to install the dependencies.
 
 ### Downloading files
 
+```swift
     public func dowloadFile(withRequest request: URLRequest,
                             inDirectory directory: String? = nil,
                             withName fileName: String? = nil,
                             onProgress progressBlock:DownloadProgressBlock? = nil,
                             onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
+```
 
 #### Parameters :
 
@@ -62,8 +68,9 @@ If a directory name is provided, a new sub-directory will be created in the Cach
     - If the download was unsuccessful, `error` represents the error that occured in the downloading process.
     
 #### Calling this method
-
+```swift
     SDDownloadManager.shared.downloadFile( /*Params */)
+```    
     
 #### return
 
@@ -81,6 +88,7 @@ For background downloads to be supported, add this to your `AppDelegate`
 
 If you want to show a local notification after all background downloads finish, set `showLocalNotificationOnBackgroundDownloadDone` to `true`. You can set the text of local notification using `localNotificationText` property, Refer the following snippet : 
 
+```swift
     SDDownloadManager.shared.showLocalNotificationOnBackgroundDownloadDone = true //Set this if you want to issue a local notification when all the background downloads complete.
     SDDownloadManager.shared.localNotificationText = "All background downloads complete" //Text for the local notification
     let downloadKey = SDDownloadManager.shared.downloadFile(withRequest: request, inDirectory: directoryName, withName: directoryName, shouldDownloadInBackground: true, onProgress: { (progress) in
@@ -95,35 +103,42 @@ If you want to show a local notification after all background downloads finish, 
                 }
             }
         }
+```
       
 ### Checking for current downloads 
 
 To check if a file is being downloaded, you can use one of the following methods:
-
+```swift
     public func isDownloadInProgress(forKey key:String?) -> Bool
+```
 
 To get all the dowloads that are in progress:
-
+```swift
     public func currentDownloads() -> [String]
+```
 
 To alter the blocks of an ongoing download:
-
+```swift
     public func alterDownload(withKey key:String?,
                               onProgress progressBlock:DownloadProgressBlock?,
                               onCompletion completionBlock:@escaping DownloadCompletionBlock)
+```
 ### Cancelling downloads
 
 To cancel all downloads:
-
+```swift
     public func cancelAllDownloads()
+```
 
 To cancel a specific download:
 
+```swift
     public func cancelDownload(forUniqueKey key:String?)
+```
                                   
 ## Requirements
 
-`SDDownloadManager` requires iOS 9.x or greater.
+`SDDownloadManager` requires iOS 12.x or greater.
 
 ## Future Enhancements
 
