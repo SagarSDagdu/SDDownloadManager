@@ -32,8 +32,12 @@ class SDFileUtils: NSObject {
                          toDirectory directory: String?,
                          withName name: String) -> (Bool, Error?, URL?)
     {
-        var newUrl: URL
-        if let directory = directory {
+        guard !name.isEmpty else {
+            return (false, NSError(domain: "SDFileUtils", code: 1, userInfo: [NSLocalizedDescriptionKey: "File name cannot be empty"]), nil)
+        }
+
+        let newUrl: URL
+        if let directory = directory, !directory.isEmpty {
             let directoryCreationResult = createDirectoryIfNotExists(withName: directory)
             guard directoryCreationResult.0 else {
                 return (false, directoryCreationResult.1, nil)
@@ -42,7 +46,11 @@ class SDFileUtils: NSObject {
         } else {
             newUrl = cacheDirectoryPath().appendingPathComponent(name)
         }
+
         do {
+            if FileManager.default.fileExists(atPath: newUrl.path) {
+                try FileManager.default.removeItem(at: newUrl)
+            }
             try FileManager.default.moveItem(at: url, to: newUrl)
             return (true, nil, newUrl)
         } catch {
@@ -51,11 +59,19 @@ class SDFileUtils: NSObject {
     }
 
     static func cacheDirectoryPath() -> URL {
-        let cachePath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0]
+        let cachePaths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)
+        guard let cachePath = cachePaths.first else {
+            // If we can't get the cache directory, fall back to the temporary directory
+            return FileManager.default.temporaryDirectory
+        }
         return URL(fileURLWithPath: cachePath)
     }
 
     static func createDirectoryIfNotExists(withName name: String) -> (Bool, Error?) {
+        guard !name.isEmpty else {
+            return (false, NSError(domain: "SDFileUtils", code: 2, userInfo: [NSLocalizedDescriptionKey: "Directory name cannot be empty"]))
+        }
+
         let directoryUrl = cacheDirectoryPath().appendingPathComponent(name)
         if FileManager.default.fileExists(atPath: directoryUrl.path) {
             return (true, nil)
