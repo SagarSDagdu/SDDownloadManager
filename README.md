@@ -39,11 +39,11 @@ Run `pod install` to install the dependencies.
 ### Downloading files
 
 ```swift
-    public func dowloadFile(withRequest request: URLRequest,
-                            inDirectory directory: String? = nil,
-                            withName fileName: String? = nil,
-                            onProgress progressBlock:DownloadProgressBlock? = nil,
-                            onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
+public func dowloadFile(withRequest request: URLRequest,
+                        inDirectory directory: String? = nil,
+                        withName fileName: String? = nil,
+                        onProgress progressBlock:DownloadProgressBlock? = nil,
+                        onCompletion completionBlock:@escaping DownloadCompletionBlock) -> String? 
 ```
 
 #### Parameters :
@@ -69,7 +69,7 @@ If a directory name is provided, a new sub-directory will be created in the Cach
     
 #### Calling this method
 ```swift
-    SDDownloadManager.shared.downloadFile( /*Params */)
+SDDownloadManager.shared.downloadFile( /*Params */)
 ```    
     
 #### return
@@ -80,60 +80,61 @@ If a directory name is provided, a new sub-directory will be created in the Cach
 
 The parameter `shouldDownloadInBackground` to the method `downloadFile()` decides whether the download should occur using a background session.
 For background downloads to be supported, add this to your `AppDelegate`
-
-    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-        debugPrint("handleEventsForBackgroundURLSession: \(identifier)")
-        SDDownloadManager.shared.backgroundCompletionHandler = completionHandler
-    }
+```swift
+func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+    debugPrint("handleEventsForBackgroundURLSession: \(identifier)")
+    SDDownloadManager.shared.backgroundCompletionHandler = completionHandler
+}
+```
 
 If you want to show a local notification after all background downloads finish, set `showLocalNotificationOnBackgroundDownloadDone` to `true`. You can set the text of local notification using `localNotificationText` property, Refer the following snippet : 
 
 ```swift
-    SDDownloadManager.shared.showLocalNotificationOnBackgroundDownloadDone = true //Set this if you want to issue a local notification when all the background downloads complete.
-    SDDownloadManager.shared.localNotificationText = "All background downloads complete" //Text for the local notification
-    let downloadKey = SDDownloadManager.shared.downloadFile(withRequest: request, inDirectory: directoryName, withName: directoryName, shouldDownloadInBackground: true, onProgress: { (progress) in
-            let percentage = String(format: "%.1f %", (progress * 100))
-            debugPrint("Background progress : \(percentage)")
-        }) { [weak self] (error, url) in
-            if let error = error {
-                print("Error is \(error as NSError)")
-            } else {
-                if let url = url {
-                    print("Downloaded file's url is \(url.path)")
-                }
+SDDownloadManager.shared.showLocalNotificationOnBackgroundDownloadDone = true  // Set this if you want to issue a local notification when all the background downloads complete.
+SDDownloadManager.shared.localNotificationText = "All background downloads complete"  // Text for the local notification
+let downloadKey = SDDownloadManager.shared.downloadFile(withRequest: request, inDirectory: directoryName, withName: directoryName, shouldDownloadInBackground: true, onProgress: { (progress) in
+        let percentage = String(format: "%.1f %", (progress * 100))
+        debugPrint("Background progress : \(percentage)")
+    }) { [weak self] (error, url) in
+        if let error = error {
+            print("Error is \(error as NSError)")
+        } else {
+            if let url = url {
+                print("Downloaded file's url is \(url.path)")
             }
         }
+    }
 ```
       
 ### Checking for current downloads 
 
 To check if a file is being downloaded, you can use one of the following methods:
 ```swift
-    public func isDownloadInProgress(forKey key:String?) -> Bool
+public func isDownloadInProgress(forKey key:String?) -> Bool
 ```
 
 To get all the dowloads that are in progress:
 ```swift
-    public func currentDownloads() -> [String]
+public func currentDownloads() -> [String]
 ```
 
 To alter the blocks of an ongoing download:
 ```swift
-    public func alterDownload(withKey key:String?,
-                              onProgress progressBlock:DownloadProgressBlock?,
-                              onCompletion completionBlock:@escaping DownloadCompletionBlock)
+public func alterDownload(withKey key:String?,
+                          onProgress progressBlock:DownloadProgressBlock?,
+                          onCompletion completionBlock:@escaping DownloadCompletionBlock)
 ```
 ### Cancelling downloads
 
 To cancel all downloads:
 ```swift
-    public func cancelAllDownloads()
+public func cancelAllDownloads()
 ```
 
 To cancel a specific download:
 
 ```swift
-    public func cancelDownload(forUniqueKey key:String?)
+public func cancelDownload(forUniqueKey key:String?)
 ```
                                   
 ## Requirements
