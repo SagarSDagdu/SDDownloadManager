@@ -13,6 +13,12 @@ A simple and robust download manager for iOS (Swift 5) based on `URLSession` to 
 
 - - - 
 
+## Sponsorship
+I'm working on `SDDownloadManager` as a fun side project. I believe in the power of open source, and I'm thrilled to share it with you. If it saves you time and you’d like to show your appreciation, I would be incredibly grateful for your support.
+
+<a href="https://www.buymeacoffee.com/sagardagdu"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕️&slug=sagardagdu&button_colour=FF5F5F&font_colour=ffffff&font_family=Arial&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
+
 ## Minimum iOS version support
 
 iOS 12.0
